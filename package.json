@@ -1,0 +1,14 @@
+{
+  "name": "zosjobs",
+  "version": "0.1.0",
+  "description": "Command line access to z/OS Connect Jobs",
+  "main": "index.js",
+  "author": "Andrew Smithson <smithson@uk.ibm.com>",
+  "license": "Apache-2.0",
+  "bin": {
+    "zosjobs": "index.js"
+  },
+  "dependencies": {
+    "inquirer": "^2.0.0"
+  }
+}
