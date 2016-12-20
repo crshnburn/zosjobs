@@ -67,6 +67,7 @@ inquirer.prompt(loginDetails).then(function (answers) {
                             } else {
                                 console.log(data);
                             }
+                            process.exit(1);
                         } else {
                             var ddCards = {};
                             data.forEach(function (dd) {
@@ -91,6 +92,7 @@ inquirer.prompt(loginDetails).then(function (answers) {
                                         } else {
                                             console.log(data);
                                         }
+                                        process.exit(1);
                                     } else {
                                         console.log(data);
                                     }
