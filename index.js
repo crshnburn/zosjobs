@@ -2,6 +2,7 @@
 
 'use strict';
 var inquirer = require('inquirer');
+var request = require('request');
 
 var loginDetails = [
     {
@@ -22,6 +23,17 @@ var loginDetails = [
 ];
 
 inquirer.prompt(loginDetails).then(function(answers){
-    console.log("\nLogin details:");
-    console.log(JSON.stringify(answers, null, '   '));
+    var options = {
+        uri: answers.connUrl + '/zosmf/restjobs/jobs',
+        auth: {
+            user: answers.user,
+            password: answers.password,
+            sendImmediately: true
+        },
+        json: true,
+        strictSSL: false
+    };
+    request.get(options, function(error, response, data){
+        console.log(JSON.stringify(data, null, 3));
+    });
 });
