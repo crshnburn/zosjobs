@@ -3,6 +3,13 @@
 'use strict';
 var inquirer = require('inquirer');
 var request = require('request');
+var program = require('commander');
+
+program.version('0.1.0')
+    .option('-c, --connUrl', 'specifies the z/OS MF hostname and port')
+    .option('-u, --user', 'specifies the user ID')
+    .option('-p, --password', 'specifies the password')
+    .parse(process.argv);
 
 var loginDetails = [{
     type: 'input',
