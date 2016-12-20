@@ -35,6 +35,16 @@ inquirer.prompt(loginDetails).then(function(answers){
         strictSSL: false
     };
     request.get(options, function(error, response, data){
+        if(error){
+            console.log(error);
+            process.exit(1);
+        } else if (response.statusCode != 200) {
+            if(data === undefined){
+                console.log(response.statusMessage);
+            } else {
+                console.log(data);
+            }
+        } else {
         var jobs = {};
         
         data.forEach(function(job){
@@ -76,5 +86,6 @@ inquirer.prompt(loginDetails).then(function(answers){
                 });
             });
         });
+        }
     });
 });
