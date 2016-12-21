@@ -4,11 +4,12 @@
 var inquirer = require('inquirer');
 var request = require('request');
 var program = require('commander');
+var async = require('async');
 
 program.version('0.1.0')
-    .option('-c, --connUrl', 'specifies the z/OS MF hostname and port')
-    .option('-u, --user', 'specifies the user ID')
-    .option('-p, --password', 'specifies the password')
+    .option('-c, --connUrl [url]', 'specifies the z/OS MF hostname and port')
+    .option('-u, --user [user]', 'specifies the user ID')
+    .option('-p, --password [password]', 'specifies the password')
     .parse(process.argv);
 
 var loginDetails = [{
@@ -25,13 +26,64 @@ var loginDetails = [{
     message: 'Password'
 }];
 
-inquirer.prompt(loginDetails).then(function (answers) {
-    var connUrl = answers.connUrl;
+var connUrl;
+var user;
+var password;
+
+async.series([
+    function (done) {
+        if (program.connUrl) {
+            connUrl = program.connUrl;
+            done();
+        } else {
+            inquirer.prompt([{
+                type: 'input',
+                name: 'connUrl',
+                message: 'z/OS MF URL',
+            }]).then(function (answers) {
+                connUrl = answers.connUrl;
+                done();
+            });
+        }
+    },
+    function (done) {
+        if (program.user) {
+            connUrl = program.user;
+            done();
+        } else {
+            inquirer.prompt([{
+                type: 'input',
+                name: 'user',
+                message: 'User ID',
+            }]).then(function (answers) {
+                user = answers.user;
+                done();
+            });
+        }
+    },
+    function (done) {
+        if (program.password) {
+            connUrl = program.password;
+            done();
+        } else {
+            inquirer.prompt([{
+                type: 'password',
+                name: 'password',
+                message: 'Password',
+            }]).then(function (answers) {
+                password = answers.password;
+                done();
+            });
+        }
+    }
+], function (err) {
+    console.log(connUrl);
+
     var options = {
-        uri: answers.connUrl + '/zosmf/restjobs/jobs',
+        uri: connUrl + '/zosmf/restjobs/jobs',
         auth: {
-            user: answers.user,
-            password: answers.password,
+            user: user,
+            password: password,
             sendImmediately: true
         },
         json: true,
