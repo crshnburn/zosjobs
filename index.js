@@ -12,20 +12,6 @@ program.version('0.1.0')
     .option('-p, --password [password]', 'specifies the password')
     .parse(process.argv);
 
-var loginDetails = [{
-    type: 'input',
-    name: 'connUrl',
-    message: 'z/OS MF URL',
-}, {
-    type: 'input',
-    name: 'user',
-    message: 'User ID'
-}, {
-    type: 'password',
-    name: 'password',
-    message: 'Password'
-}];
-
 var connUrl;
 var user;
 var password;
