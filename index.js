@@ -84,7 +84,6 @@ async.series([
             strictSSL: false
         };
         inquirer.prompt(joblist).then(answers => {
-            console.log("Get details for JOBID " + answers.jobname);
             zosjobs.getJobCards(jobs[answers.jobname]).then(ddCards => {
                 var ddlist = [{
                     type: 'list',
