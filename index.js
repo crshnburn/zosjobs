@@ -85,7 +85,7 @@ async.series([
             json: true,
             strictSSL: false
         };
-        inquirer.prompt(joblist).then(function (answers) {
+        inquirer.prompt(joblist).then(answers => {
             console.log("Get details for JOBID " + answers.jobname);
             zosjobs.getJobCards(jobs[answers.jobname]).then(ddCards => {
                 var ddlist = [{
@@ -94,8 +94,7 @@ async.series([
                     message: 'Which DD card?',
                     choices: Object.keys(ddCards)
                 }];
-                inquirer.prompt(ddlist).then(function (answers) {
-                    options.uri = ddCards[answers.ddcard]['records-url'];
+                inquirer.prompt(ddlist).then(answers => {
                     zosjobs.getRecords(ddCards[answers.ddcard]).then(data => console.log(data)).catch(error => console.log(error));
                 });
             }).catch(error => console.log(error));
