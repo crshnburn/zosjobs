@@ -67,34 +67,32 @@ async.series([
 ], function (err) {
     let zosjobs = new ZosJobs(connUrl, user, password);
     zosjobs.getJobs().then(jobs => {
-        var joblist = [{
-            type: 'list',
-            name: 'jobname',
-            message: 'Which Job?',
-            choices: Object.keys(jobs)
-        }];
-        var options = {
-            uri: connUrl + '/zosmf/restjobs/jobs',
-            auth: {
-                user: user,
-                password: password,
-                sendImmediately: true
-            },
-            json: true,
-            strictSSL: false
-        };
-        inquirer.prompt(joblist).then(answers => {
-            zosjobs.getJobCards(jobs[answers.jobname]).then(ddCards => {
-                var ddlist = [{
-                    type: 'list',
-                    name: 'ddcard',
-                    message: 'Which DD card?',
-                    choices: Object.keys(ddCards)
-                }];
-                inquirer.prompt(ddlist).then(answers => {
-                    zosjobs.getRecords(ddCards[answers.ddcard]).then(data => console.log(data)).catch(error => console.log(error));
-                });
-            }).catch(error => console.log(error));
-        });
+        if (jobs.length > 0) {
+            var joblist = [{
+                type: 'list',
+                name: 'jobname',
+                message: 'Which Job?',
+                choices: Object.keys(jobs)
+            }];
+            inquirer.prompt(joblist).then(answers => {
+                zosjobs.getJobCards(jobs[answers.jobname]).then(ddCards => {
+                    if (ddCards.length > 0) {
+                        var ddlist = [{
+                            type: 'list',
+                            name: 'ddcard',
+                            message: 'Which DD card?',
+                            choices: Object.keys(ddCards)
+                        }];
+                        inquirer.prompt(ddlist).then(answers => {
+                            zosjobs.getRecords(ddCards[answers.ddcard]).then(data => console.log(data)).catch(error => console.log(error));
+                        });
+                    } else {
+                        console.log("No DD Cards for Job");
+                    }
+                }).catch(error => console.log(error));
+            });
+        } else {
+            console.log("No Jobs Found");
+        }
     }).catch(error => console.log(error));
 });
