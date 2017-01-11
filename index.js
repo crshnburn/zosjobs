@@ -65,8 +65,6 @@ async.series([
         }
     }
 ], function (err) {
-    console.log(connUrl);
-
     let zosjobs = new ZosJobs(connUrl, user, password);
     zosjobs.getJobs().then(jobs => {
         var joblist = [{
