@@ -2,7 +2,6 @@
 
 'use strict';
 var inquirer = require('inquirer');
-var request = require('request');
 var program = require('commander');
 var async = require('async');
 
