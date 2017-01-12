@@ -11,11 +11,13 @@ program.version('0.1.0')
     .option('-c, --connUrl [url]', 'specifies the z/OS MF hostname and port')
     .option('-u, --user [user]', 'specifies the user ID')
     .option('-p, --password [password]', 'specifies the password')
+    .option('-o, --owner [owner]', 'the owner of the jobs to retrieve')
     .parse(process.argv);
 
 var connUrl;
 var user;
 var password;
+var owner;
 
 async.series([
     function (done) {
@@ -27,7 +29,7 @@ async.series([
                 type: 'input',
                 name: 'connUrl',
                 message: 'z/OS MF URL',
-            }]).then(function (answers) {
+            }]).then(answers => {
                 connUrl = answers.connUrl;
                 done();
             });
@@ -42,7 +44,7 @@ async.series([
                 type: 'input',
                 name: 'user',
                 message: 'User ID',
-            }]).then(function (answers) {
+            }]).then(answers => {
                 user = answers.user;
                 done();
             });
@@ -57,16 +59,32 @@ async.series([
                 type: 'password',
                 name: 'password',
                 message: 'Password',
-            }]).then(function (answers) {
+            }]).then(answers => {
                 password = answers.password;
+                done();
+            });
+        }
+    },
+    function (done){
+        if(program.owner) {
+            owner = program.owner;
+            done();
+        } else {
+            inquirer.prompt([{
+                type: 'input',
+                name: 'owner',
+                message: 'Owner',
+                default: user
+            }]).then(answers => {
+                owner = answers.owner;
                 done();
             });
         }
     }
 ], function (err) {
-    let zosjobs = new ZosJobs(connUrl, user, password);
+    let zosjobs = new ZosJobs(connUrl, user, password, owner);
     zosjobs.getJobs().then(jobs => {
-        if (jobs.length > 0) {
+        if (Object.keys(jobs).length > 0) {
             var joblist = [{
                 type: 'list',
                 name: 'jobname',
@@ -75,7 +93,7 @@ async.series([
             }];
             inquirer.prompt(joblist).then(answers => {
                 zosjobs.getJobCards(jobs[answers.jobname]).then(ddCards => {
-                    if (ddCards.length > 0) {
+                    if (Object.keys(ddCards).length > 0) {
                         var ddlist = [{
                             type: 'list',
                             name: 'ddcard',

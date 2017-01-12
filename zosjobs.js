@@ -1,17 +1,22 @@
-var request = require('request');
+const request = require('request');
+const URL = require('url');
 
 module.exports = class ZosJobs {
 
-  constructor(connUrl, userId, password) {
+  constructor(connUrl, userId, password, owner) {
     this.url = connUrl;
     this.userId = userId;
     this.password = password;
+    this.owner = owner;
   }
 
   getJobs() {
     return new Promise((resolve, reject) => {
       var options = {
-        uri: this.url + '/zosmf/restjobs/jobs',
+        uri: this.url + '/zosmf/restjobs/jobs/',
+        qs: {
+          owner: this.owner
+        },
         auth: {
           user: this.userId,
           password: this.password,
@@ -43,8 +48,10 @@ module.exports = class ZosJobs {
 
   getJobCards(job) {
     return new Promise((resolve, reject) => {
+      var filesUrl = URL.parse(job['files-url']);
+      filesUrl.path = filesUrl.path.replace('\/\/', '\/');
       var options = {
-        uri: job.url,
+        url: filesUrl,
         auth: {
           user: this.userId,
           password: this.password,
@@ -54,24 +61,21 @@ module.exports = class ZosJobs {
         strictSSL: false
       };
       request.get(options, function (error, response, data) {
-        options.uri = data['files-url'];
-        request.get(options, function (error, response, data) {
-          if (error) {
-            reject(error);
-          } else if (response.statusCode != 200) {
-            if (data === undefined) {
-              reject(response.statusMessage);
-            } else {
-              reject(data);
-            }
+        if (error) {
+          reject(error);
+        } else if (response.statusCode != 200) {
+          if (data === undefined) {
+            reject(response.statusMessage);
           } else {
-            var ddCards = {};
-            data.forEach(function (dd) {
-              ddCards[dd.ddname] = dd;
-            });
-            resolve(ddCards);
+            reject(data);
           }
-        });
+        } else {
+          var ddCards = {};
+          data.forEach(function (dd) {
+            ddCards[dd.ddname] = dd;
+          });
+          resolve(ddCards);
+        }
       });
     });
   }
