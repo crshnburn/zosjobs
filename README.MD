@@ -6,7 +6,7 @@ Makes use of the [zOSMF REST API](https://www.ibm.com/support/knowledgecenter/SS
 
 ## Installation
 
-1. `git clone `
+1. `git clone https://github.ibm.com/SMITHSON/zosjobs.git`
 1. `npm link`
 
 ## Usage
