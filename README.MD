@@ -4,6 +4,8 @@ Command line tool to retrieve z/OS Job Output and display on the console.
 
 Makes use of the [zOSMF REST API](https://www.ibm.com/support/knowledgecenter/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_RESTJOBS.htm).
 
+![zosjobs example](doc/zosjobs.gif)
+
 ## Installation
 
 1. `git clone https://github.ibm.com/SMITHSON/zosjobs.git`
