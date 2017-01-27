@@ -7,6 +7,9 @@
   "bin": {
     "zosjobs": "index.js"
   },
+  "scripts": {
+    "test": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && codecov"
+  },
   "dependencies": {
     "async": "^2.1.4",
     "commander": "^2.9.0",
@@ -14,6 +17,10 @@
     "request": "^2.79.0"
   },
   "devDependencies": {
-    "jscs": "^3.0.7"
+    "chai-as-promised": "^6.0.0",
+    "codecov.io": "^0.1.6",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.2.0",
+    "nock": "^9.0.2"
   }
 }
