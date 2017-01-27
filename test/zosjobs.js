@@ -31,7 +31,7 @@ describe('zosjobs', function () {
         owner: 'user',
       }).reply(200, [{
           class: 'TSU',
-          'files-url': 'https://winmvs21:20049/zosmf/restjobs/jobs//-JES2/SMITHSO/TSU34306/files',
+          'files-url': 'http://test:9080/zosmf/restjobs/jobs//-JES2/SMITHSO/TSU34306/files',
           jobid: 'TSU34306',
           jobname: 'SMITHSO',
           owner: 'SMITHSO',
@@ -39,11 +39,11 @@ describe('zosjobs', function () {
           status: 'ACTIVE',
           subsystem: 'JES2',
           type: 'TSU',
-          url: 'https://winmvs21:20049/zosmf/restjobs/jobs//-JES2/SMITHSO/TSU34306',
+          url: 'http://test:9080/zosmf/restjobs/jobs//-JES2/SMITHSO/TSU34306',
         },
         {
           class: 'A',
-          'files-url': 'https://winmvs21:20049/zosmf/restjobs/jobs//-JES2/TESTA/JOB34307/files',
+          'files-url': 'http://test:9080/zosmf/restjobs/jobs//-JES2/TESTA/JOB34307/files',
           jobid: 'JOB34307',
           jobname: 'TESTA',
           owner: 'SMITHSO',
@@ -51,7 +51,7 @@ describe('zosjobs', function () {
           status: 'ACTIVE',
           subsystem: 'JES2',
           type: 'JOB',
-          url: 'https://winmvs21:20049/zosmf/restjobs/jobs//-JES2/TESTA/JOB34307',
+          url: 'http://test:9080/zosmf/restjobs/jobs//-JES2/TESTA/JOB34307',
         },
       ]);
       return conn.getJobs().should.eventually.have.keys('SMITHSO', 'TESTA');
