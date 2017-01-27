@@ -97,7 +97,7 @@ async.series([
             });
         }
     }
-], function (err) {
+], function () {
     let zosjobs = new ZosJobs(connUrl, user, password, owner);
     zosjobs.getJobs().then(jobs => {
         if (Object.keys(jobs).length > 0) {
