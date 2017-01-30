@@ -22,5 +22,5 @@
         "valid-typeof": "warn",
         "no-console": "off"
     },
-    "extends": "eslint:recommended"
+    "extends": "airbnb-base"
 }
