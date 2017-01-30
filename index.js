@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+/* istanbul ignore next */
+
 const inquirer = require('inquirer');
 const program = require('commander');
 const async = require('async');
