@@ -29,7 +29,7 @@ module.exports = class ZosJobs {
   getJobs() {
     return new Promise((resolve, reject) => {
       var options = {
-        uri: this.url + '/zosmf/restjobs/jobs/',
+        uri: this.url + '/zosmf/restjobs/jobs',
         qs: {
           owner: this.owner
         },
@@ -65,7 +65,6 @@ module.exports = class ZosJobs {
   getJobCards(job) {
     return new Promise((resolve, reject) => {
       var filesUrl = URL.parse(job['files-url']);
-      filesUrl.path = filesUrl.path.replace('\/\/', '\/');
       var options = {
         url: filesUrl,
         auth: {
