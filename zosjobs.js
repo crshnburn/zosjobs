@@ -111,7 +111,7 @@ module.exports = class ZosJobs {
         if (error) {
           reject(error);
         } else if (response.statusCode !== 200) {
-          if (data === undefined) {
+          if (data === '') {
             reject(response.statusMessage);
           } else {
             reject(data);
