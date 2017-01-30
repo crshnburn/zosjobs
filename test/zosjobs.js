@@ -21,51 +21,53 @@ var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 chai.should();
 
+var getJobsResponse = [{
+    class: 'TSU',
+    'files-url': 'http://test:9080/zosmf/restjobs/jobs/-JES2/SMITHSO/TSU34306/files',
+    jobid: 'TSU34306',
+    jobname: 'SMITHSO',
+    owner: 'SMITHSO',
+    retcode: null,
+    status: 'ACTIVE',
+    subsystem: 'JES2',
+    type: 'TSU',
+    url: 'http://test:9080/zosmf/restjobs/jobs/-JES2/SMITHSO/TSU34306',
+  },
+  {
+    class: 'A',
+    'files-url': 'http://test:9080/zosmf/restjobs/jobs/-JES2/TESTA/JOB34307/files',
+    jobid: 'JOB34307',
+    jobname: 'TESTA',
+    owner: 'SMITHSO',
+    retcode: null,
+    status: 'ACTIVE',
+    subsystem: 'JES2',
+    type: 'JOB',
+    url: 'http://test:9080/zosmf/restjobs/jobs/-JES2/TESTA/JOB34307',
+  },
+];
+
 var ZosJobs = require('../zosjobs.js');
 
 describe('zosjobs', function () {
   describe('getJobs', function () {
     it('should return a list of jobs', function () {
       var conn = new ZosJobs('http://test:9080', 'user', 'password', 'user');
-      nock('http://test:9080').get('/zosmf/restjobs/jobs/').query({
+      nock('http://test:9080').get('/zosmf/restjobs/jobs').query({
         owner: 'user',
-      }).reply(200, [{
-          class: 'TSU',
-          'files-url': 'http://test:9080/zosmf/restjobs/jobs//-JES2/SMITHSO/TSU34306/files',
-          jobid: 'TSU34306',
-          jobname: 'SMITHSO',
-          owner: 'SMITHSO',
-          retcode: null,
-          status: 'ACTIVE',
-          subsystem: 'JES2',
-          type: 'TSU',
-          url: 'http://test:9080/zosmf/restjobs/jobs//-JES2/SMITHSO/TSU34306',
-        },
-        {
-          class: 'A',
-          'files-url': 'http://test:9080/zosmf/restjobs/jobs//-JES2/TESTA/JOB34307/files',
-          jobid: 'JOB34307',
-          jobname: 'TESTA',
-          owner: 'SMITHSO',
-          retcode: null,
-          status: 'ACTIVE',
-          subsystem: 'JES2',
-          type: 'JOB',
-          url: 'http://test:9080/zosmf/restjobs/jobs//-JES2/TESTA/JOB34307',
-        },
-      ]);
+      }).reply(200, getJobsResponse);
       return conn.getJobs().should.eventually.have.keys('SMITHSO', 'TESTA');
     });
     it('should fail with a security error', function () {
       var conn = new ZosJobs('http://test:9080', 'user', 'password', 'user');
-      nock('http://test:9080').get('/zosmf/restjobs/jobs/').query({
+      nock('http://test:9080').get('/zosmf/restjobs/jobs').query({
         owner: 'user',
       }).reply(403);
       return conn.getJobs().should.be.rejectedWith(403);
     });
     it('should fail due to network error', function () {
       var conn = new ZosJobs('http://test:9080', 'user', 'password', 'user');
-      nock('http://test:9080').get('/zosmf/restjobs/jobs/').query({
+      nock('http://test:9080').get('/zosmf/restjobs/jobs').query({
         owner: 'user',
       }).replyWithError('Socket Error');
       return conn.getJobs().should.be.rejectedWith('Socket Error');
