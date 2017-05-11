@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/crshnburn/zosjobs.svg?branch=master)](https://travis-ci.org/crshnburn/zosjobs)
+[![codecov](https://codecov.io/gh/crshnburn/zosjobs/branch/master/graph/badge.svg)](https://codecov.io/gh/crshnburn/zosjobs)
 # zosjobs command
 
 Command line tool to retrieve z/OS Job Output and display on the console.
