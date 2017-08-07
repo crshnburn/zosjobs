@@ -1,6 +1,7 @@
+# zosjobs command
+
 [![Build Status](https://travis-ci.org/crshnburn/zosjobs.svg?branch=master)](https://travis-ci.org/crshnburn/zosjobs)
 [![codecov](https://codecov.io/gh/crshnburn/zosjobs/branch/master/graph/badge.svg)](https://codecov.io/gh/crshnburn/zosjobs)
-# zosjobs command
 
 Command line tool to retrieve z/OS Job Output and display on the console.
 
@@ -10,12 +11,11 @@ Makes use of the [zOSMF REST API](https://www.ibm.com/support/knowledgecenter/SS
 
 ## Installation
 
-1. `git clone https://github.com/crshnburn/zosjobs.git`
-1. `npm link`
+1. `npm install -g zosjobs`
 
 ## Usage
 
-```
+```text
   Usage: zosjobs [options]
 
   Options:
@@ -29,7 +29,8 @@ Makes use of the [zOSMF REST API](https://www.ibm.com/support/knowledgecenter/SS
 ```
 
 ## License
-```
+
+```text
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
