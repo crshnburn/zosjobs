@@ -13,21 +13,21 @@
     "posttest": "npm run lint"
   },
   "dependencies": {
-    "async": "^2.1.4",
-    "commander": "^2.9.0",
-    "inquirer": "^2.0.0",
-    "request": "^2.79.0"
+    "async": "^2.5.0",
+    "commander": "^2.11.0",
+    "inquirer": "^3.2.1",
+    "request": "^2.81.0"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "chai-as-promised": "^6.0.0",
-    "codecov": "^1.0.1",
-    "eslint": "^3.14.1",
-    "eslint-config-airbnb-base": "^11.0.1",
-    "eslint-plugin-import": "^2.2.0",
+    "chai": "^4.1.0",
+    "chai-as-promised": "^7.1.1",
+    "codecov": "^2.3.0",
+    "eslint": "^4.4.0",
+    "eslint-config-airbnb-base": "^11.3.1",
+    "eslint-plugin-import": "^2.7.0",
     "istanbul": "^0.4.5",
-    "mocha": "^3.2.0",
-    "nock": "^9.0.2"
+    "mocha": "^3.5.0",
+    "nock": "^9.0.14"
   },
   "keywords": [
     "z/OS", "jobs", "mainframe", "z/OSMF"
