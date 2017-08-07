@@ -18,7 +18,6 @@ const request = require('request');
 const URL = require('url');
 
 module.exports = class ZosJobs {
-
   constructor(connUrl, userId, password, owner) {
     this.url = connUrl;
     this.userId = userId;
