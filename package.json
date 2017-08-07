@@ -28,5 +28,8 @@
     "istanbul": "^0.4.5",
     "mocha": "^3.2.0",
     "nock": "^9.0.2"
-  }
+  },
+  "keywords": [
+    "z/OS", "jobs", "mainframe", "z/OSMF"
+  ]
 }
