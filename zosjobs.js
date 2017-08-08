@@ -25,6 +25,10 @@ module.exports = class ZosJobs {
     this.owner = owner;
   }
 
+  setOwner(owner) {
+    this.owner = owner;
+  }
+
   getJobs() {
     return new Promise((resolve, reject) => {
       const options = {
@@ -117,6 +121,38 @@ module.exports = class ZosJobs {
           }
         } else {
           resolve(data);
+        }
+      });
+    });
+  }
+
+  issueCommand(command, systemName) {
+    return new Promise((resolve, reject) => {
+      const options = {
+        uri: `${this.url}/zosmf/restconsoles/consoles/defcn`,
+        auth: {
+          user: this.userId,
+          password: this.password,
+          sendImmediately: true,
+        },
+        json: true,
+        strictSSL: false,
+        body: {
+          cmd: command,
+          system: systemName,
+        },
+      };
+      request.put(options, (error, response, data) => {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode !== 200) {
+          if (data === '') {
+            reject(response.statusCode);
+          } else {
+            reject(data);
+          }
+        } else {
+          resolve(data['cmd-response'].replace(/\r/g, '\n'));
         }
       });
     });

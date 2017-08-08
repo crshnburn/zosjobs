@@ -82,52 +82,82 @@ async.series([
       });
     }
   },
-  function ownerPrompt(done) {
-    if (program.owner) {
-      owner = program.owner;
-      done();
-    } else {
-      inquirer.prompt([{
-        type: 'input',
-        name: 'owner',
-        message: 'Owner',
-        default: user,
-      }]).then((answers) => {
-        owner = answers.owner;
-        done();
-      });
-    }
-  },
 ], () => {
   const zosjobs = new ZosJobs(connUrl, user, password, owner);
-  zosjobs.getJobs().then((jobs) => {
-    if (Object.keys(jobs).length > 0) {
-      const joblist = [{
-        type: 'list',
-        name: 'jobname',
-        message: 'Which Job?',
-        choices: Object.keys(jobs),
-      }];
-      inquirer.prompt(joblist).then((answers) => {
-        zosjobs.getJobCards(jobs[answers.jobname]).then((ddCards) => {
-          if (Object.keys(ddCards).length > 0) {
-            const ddlist = [{
-              type: 'list',
-              name: 'ddcard',
-              message: 'Which DD card?',
-              choices: Object.keys(ddCards),
-            }];
-            inquirer.prompt(ddlist).then((ddanswers) => {
-              zosjobs.getRecords(ddCards[ddanswers.ddcard])
-                .then(data => console.log(data)).catch(error => console.log(error));
-            });
+  const zosjobsOptions = [{
+    type: 'list',
+    name: 'options',
+    message: 'What do you want to do?',
+    choices: ['List Jobs', 'Issue Command'],
+  }];
+  inquirer.prompt(zosjobsOptions).then((listAnswers) => {
+    if (listAnswers.options === 'List Jobs') {
+      async.series([
+        function getOwner(done) {
+          if (program.owner) {
+            owner = program.owner;
+            done();
           } else {
-            console.log('No DD Cards for Job');
+            inquirer.prompt([{
+              type: 'input',
+              name: 'owner',
+              message: 'Owner',
+              default: user,
+            }]).then((answers) => {
+              owner = answers.owner;
+              done();
+            });
           }
-        }).catch(error => console.log(error));
-      });
+        },
+        function getJobs(done) {
+          zosjobs.setOwner(owner);
+          zosjobs.getJobs().then((jobs) => {
+            if (Object.keys(jobs).length > 0) {
+              const joblist = [{
+                type: 'list',
+                name: 'jobname',
+                message: 'Which Job?',
+                choices: Object.keys(jobs),
+              }];
+              inquirer.prompt(joblist).then((answers) => {
+                zosjobs.getJobCards(jobs[answers.jobname]).then((ddCards) => {
+                  if (Object.keys(ddCards).length > 0) {
+                    const ddlist = [{
+                      type: 'list',
+                      name: 'ddcard',
+                      message: 'Which DD card?',
+                      choices: Object.keys(ddCards),
+                    }];
+                    inquirer.prompt(ddlist).then((ddanswers) => {
+                      zosjobs.getRecords(ddCards[ddanswers.ddcard])
+                        .then(data => console.log(data)).catch(error => console.log(error));
+                    });
+                  } else {
+                    console.log('No DD Cards for Job');
+                  }
+                }).catch(error => console.log(error));
+              });
+            } else {
+              console.log('No Jobs Found');
+            }
+          }).catch(error => console.log(error));
+          done();
+        },
+      ]);
     } else {
-      console.log('No Jobs Found');
+      const commandOptions = [{
+        type: 'input',
+        name: 'command',
+        message: 'Enter the command',
+      },
+      {
+        type: 'input',
+        name: 'system',
+        message: 'Which system should the command run on?',
+      }];
+      inquirer.prompt(commandOptions).then((answers) => {
+        zosjobs.issueCommand(answers.command, answers.system).then(console.log).catch(console.log);
+      });
     }
-  }).catch(error => console.log(error));
+  });
 });
