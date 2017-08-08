@@ -115,6 +115,13 @@ const filesResponse = [{
 },
 ];
 
+const commandResponse = {
+  'cmd-response': '+\r   Prog(DFH$WB1A) Leng(0000000000) Ass Pro Ena Pri     Ced\r       Resc(0000) Use(0000000000) Any Uex Ful Qua Cic\r   Prog(DFHACP  ) Leng(0000006848) Ass Pro Ena Pri\r       Resc(0001) Use(0000000001) Any Cex Ful Qua Cic\r   Prog(DFHADWB1) Leng(0000000000) Le3 Pro Ena Pri\r       Resc(0000) Use(0000000000) Any Uex Ful Qua Cic\r   Prog(DFHAMP  ) Leng(0000227344) Ass Pro Ena Pri\r       Resc(0000) Use(0000008463) Any Cex Ful Qua Cic               Nat\r   Prog(DFHAPATT) Leng(0000001128) Ass Pro Ena Sha',
+  'cmd-response-key': 'C3693905',
+  'cmd-response-uri': '/zosmf/restconsoles/consoles/defcn/solmsgs/C3693905',
+  'cmd-response-url': 'https://winmvs27:32070/zosmf/restconsoles/consoles/defcn/solmsgs/C3693905',
+};
+
 const ZosJobs = require('../zosjobs.js');
 
 describe('zosjobs', () => {
@@ -182,7 +189,17 @@ describe('zosjobs', () => {
       nock('http://test:9080').get('/zosmf/restjobs/jobs/-JES2/TESTA/JOB34307/files').replyWithError('Socket Error');
       conn.getJobs().then(jobs => conn.getJobCards(jobs.TESTA).should.be.rejectedWith('Socket Error'));
     });
+    it('should change the owner filter', () => {
+      const conn = new ZosJobs('http://test:9080', 'user', 'password', 'olduser');
+      conn.setOwner('user');
+      nock('http://test:9080').get('/zosmf/restjobs/jobs').query({
+        owner: 'user',
+      }).reply(200, getJobsResponse);
+      nock('http://test:9080').get('/zosmf/restjobs/jobs/-JES2/TESTA/JOB34307/files').reply(200, filesResponse);
+      conn.getJobs().then(jobs => conn.getJobCards(jobs.TESTA).should.eventually.have.keys('JESMSGLG', 'JESJCL', 'JESYSMSG', 'STDOUT', 'STDERR'));
+    });
   });
+
   describe('getRecords', () => {
     const conn = new ZosJobs('http://test:9080', 'user', 'password', 'user');
     it('should return the record content', () => {
@@ -200,6 +217,26 @@ describe('zosjobs', () => {
     it('should return a socket error', () => {
       nock('http://test:9080').get('/zosmf/restjobs/jobs/-JES2/TESTA/JOB34307/files/102/records').replyWithError('Socket Error');
       return conn.getRecords(filesResponse[3]).should.be.rejectedWith('Socket Error');
+    });
+  });
+
+  describe('issueCommand', () => {
+    const conn = new ZosJobs('http://test:9080', 'user', 'password', 'user');
+    it('should return the command response', () => {
+      nock('http://test:9080').put('/zosmf/restconsoles/consoles/defcn').reply(200, commandResponse);
+      return conn.issueCommand('f CICPY00B,cemt inq PROG(DFH*)', 'MV2C').should.eventually.equal(commandResponse['cmd-response'].replace(/\r/g, '\n'));
+    });
+    it('should return an unauthorized error', () => {
+      nock('http://test:9080').put('/zosmf/restconsoles/consoles/defcn').reply(401);
+      return conn.issueCommand('f CICPY00B,cemt inq PROG(DFH*)', 'MV2C').should.be.rejectedWith(401);
+    });
+    it('should return an zOSMF error', () => {
+      nock('http://test:9080').put('/zosmf/restconsoles/consoles/defcn').reply(500, 'Server Error');
+      return conn.issueCommand('f CICPY00B,cemt inq PROG(DFH*)', 'MV2C').should.be.rejectedWith('Server Error');
+    });
+    it('should return a socket error', () => {
+      nock('http://test:9080').put('/zosmf/restconsoles/consoles/defcn').replyWithError('Socket Error');
+      return conn.issueCommand('f CICPY00B,cemt inq PROG(DFH*)', 'MV2C').should.be.rejectedWith('Socket Error');
     });
   });
 });
