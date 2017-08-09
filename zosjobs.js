@@ -157,4 +157,37 @@ module.exports = class ZosJobs {
       });
     });
   }
+
+  submitJob(jcl) {
+    return new Promise((resolve, reject) => {
+      const options = {
+        uri: `${this.url}/zosmf/restjobs/jobs/`,
+        auth: {
+          user: this.userId,
+          password: this.password,
+          sendImmediately: true,
+        },
+        headers: {
+          'Content-Type': 'text/plain',
+          'X-IBM-Intrdr-Mode': 'TEXT',
+        },
+        json: false,
+        strictSSL: false,
+        body: jcl,
+      };
+      request.put(options, (error, response, data) => {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode !== 200) {
+          if (data === undefined) {
+            reject(response.statusCode);
+          } else {
+            reject(data);
+          }
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
 };

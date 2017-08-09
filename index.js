@@ -88,7 +88,7 @@ async.series([
     type: 'list',
     name: 'options',
     message: 'What do you want to do?',
-    choices: ['List Jobs', 'Issue Command'],
+    choices: ['List Jobs', 'Submit Job', 'Issue Command'],
   }];
   inquirer.prompt(zosjobsOptions).then((listAnswers) => {
     if (listAnswers.options === 'List Jobs') {
@@ -144,6 +144,15 @@ async.series([
           done();
         },
       ]);
+    } else if (listAnswers.options === 'Submit Job') {
+      inquirer.prompt([{
+        type: 'editor',
+        name: 'jcl',
+        message: 'Enter JCL:',
+      }]).then((answers) => {
+        // console.log(answers);
+        zosjobs.submitJob(answers.jcl).then(console.log).catch(console.log);
+      });
     } else {
       const commandOptions = [{
         type: 'input',
