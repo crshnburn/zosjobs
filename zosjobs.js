@@ -179,13 +179,13 @@ module.exports = class ZosJobs {
         if (error) {
           reject(error);
         } else if (response.statusCode !== 200) {
-          if (data === undefined) {
+          if (data === '') {
             reject(response.statusCode);
           } else {
             reject(data);
           }
         } else {
-          resolve(data);
+          resolve(JSON.parse(data));
         }
       });
     });

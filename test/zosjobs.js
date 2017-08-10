@@ -122,6 +122,22 @@ const commandResponse = {
   'cmd-response-url': 'https://winmvs27:32070/zosmf/restconsoles/consoles/defcn/solmsgs/C3693905',
 };
 
+const submittedResponse = {
+  owner: 'ANDREW',
+  phase: 130,
+  subsystem: 'JES2',
+  'phase-name': 'Job is actively converting',
+  'job-correlator': 'J0088162WINMVS2CD2F69047.......:',
+  type: 'JOB',
+  url: 'https://winmvs27:32070/zosmf/restjobs/jobs/J0088162WINMVS2CD2F69047.......%3A',
+  jobid: 'JOB88162',
+  class: 'A',
+  'files-url': 'https://winmvs27:32070/zosmf/restjobs/jobs/J0088162WINMVS2CD2F69047.......%3A/files',
+  jobname: 'TESTJOBX',
+  status: 'INPUT',
+  retcode: null,
+};
+
 const ZosJobs = require('../zosjobs.js');
 
 describe('zosjobs', () => {
@@ -237,6 +253,26 @@ describe('zosjobs', () => {
     it('should return a socket error', () => {
       nock('http://test:9080').put('/zosmf/restconsoles/consoles/defcn').replyWithError('Socket Error');
       return conn.issueCommand('f CICPY00B,cemt inq PROG(DFH*)', 'MV2C').should.be.rejectedWith('Socket Error');
+    });
+  });
+
+  describe('submitJob', () => {
+    const conn = new ZosJobs('http://test:9080', 'user', 'password', 'user');
+    it('should return the job object', () => {
+      nock('http://test:9080').put('/zosmf/restjobs/jobs/').reply(200, submittedResponse);
+      return conn.submitJob('//JOBCARD NOTIFY=&USERID.').should.eventually.have.keys('owner', 'phase', 'subsystem', 'phase-name', 'job-correlator', 'type', 'url', 'jobid', 'class', 'files-url', 'jobname', 'status', 'retcode');
+    });
+    it('should return an unauthorized error', () => {
+      nock('http://test:9080').put('/zosmf/restjobs/jobs/').reply(401);
+      return conn.submitJob('//JOBCARD NOTIFY=&USERID.').should.be.rejectedWith(401);
+    });
+    it('should return an zOSMF error', () => {
+      nock('http://test:9080').put('/zosmf/restjobs/jobs/').reply(500, 'Server Error');
+      return conn.submitJob('//JOBCARD NOTIFY=&USERID.').should.be.rejectedWith('Server Error');
+    });
+    it('should return a socket error', () => {
+      nock('http://test:9080').put('/zosmf/restjobs/jobs/').replyWithError('Socket Error');
+      return conn.submitJob('//JOBCARD NOTIFY=&USERID.').should.be.rejectedWith('Socket Error');
     });
   });
 });
