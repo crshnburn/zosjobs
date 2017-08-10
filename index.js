@@ -110,8 +110,7 @@ async.series([
           }
         },
         function getJobs(done) {
-          zosjobs.setOwner(owner);
-          zosjobs.getJobs().then((jobs) => {
+          zosjobs.getJobs(owner).then((jobs) => {
             if (Object.keys(jobs).length > 0) {
               const joblist = [{
                 type: 'list',

@@ -18,23 +18,18 @@ const request = require('request');
 const URL = require('url');
 
 module.exports = class ZosJobs {
-  constructor(connUrl, userId, password, owner) {
+  constructor(connUrl, userId, password) {
     this.url = connUrl;
     this.userId = userId;
     this.password = password;
-    this.owner = owner;
   }
 
-  setOwner(owner) {
-    this.owner = owner;
-  }
-
-  getJobs() {
+  getJobs(jobOwner) {
     return new Promise((resolve, reject) => {
       const options = {
         uri: `${this.url}/zosmf/restjobs/jobs`,
         qs: {
-          owner: this.owner,
+          owner: jobOwner,
         },
         auth: {
           user: this.userId,

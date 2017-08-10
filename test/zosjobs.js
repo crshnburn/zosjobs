@@ -143,81 +143,72 @@ const ZosJobs = require('../zosjobs.js');
 describe('zosjobs', () => {
   describe('getJobs', () => {
     it('should return a list of jobs', () => {
-      const conn = new ZosJobs('http://test:9080', 'user', 'password', 'user');
+      const conn = new ZosJobs('http://test:9080', 'user', 'password');
       nock('http://test:9080').get('/zosmf/restjobs/jobs').query({
         owner: 'user',
       }).reply(200, getJobsResponse);
-      return conn.getJobs().should.eventually.have.keys('SMITHSO', 'TESTA');
+      return conn.getJobs('user').should.eventually.have.keys('SMITHSO', 'TESTA');
     });
     it('should fail with a security error', () => {
-      const conn = new ZosJobs('http://test:9080', 'user', 'password', 'user');
+      const conn = new ZosJobs('http://test:9080', 'user', 'password');
       nock('http://test:9080').get('/zosmf/restjobs/jobs').query({
         owner: 'user',
       }).reply(403);
-      return conn.getJobs().should.be.rejectedWith(403);
+      return conn.getJobs('user').should.be.rejectedWith(403);
     });
     it('should fail with a zOSMF error', () => {
-      const conn = new ZosJobs('http://test:9080', 'user', 'password', 'user');
+      const conn = new ZosJobs('http://test:9080', 'user', 'password');
       nock('http://test:9080').get('/zosmf/restjobs/jobs').query({
         owner: 'user',
       }).reply(500, 'Server Error');
-      return conn.getJobs().should.be.rejectedWith('Server Error');
+      return conn.getJobs('user').should.be.rejectedWith('Server Error');
     });
     it('should fail due to network error', () => {
-      const conn = new ZosJobs('http://test:9080', 'user', 'password', 'user');
+      const conn = new ZosJobs('http://test:9080', 'user', 'password');
       nock('http://test:9080').get('/zosmf/restjobs/jobs').query({
         owner: 'user',
       }).replyWithError('Socket Error');
-      return conn.getJobs().should.be.rejectedWith('Socket Error');
+      return conn.getJobs('user').should.be.rejectedWith('Socket Error');
     });
   });
 
   describe('getJobCards', () => {
     it('should return the list of job cards', () => {
-      const conn = new ZosJobs('http://test:9080', 'user', 'password', 'user');
+      const conn = new ZosJobs('http://test:9080', 'user', 'password');
       nock('http://test:9080').get('/zosmf/restjobs/jobs').query({
         owner: 'user',
       }).reply(200, getJobsResponse);
       nock('http://test:9080').get('/zosmf/restjobs/jobs/-JES2/TESTA/JOB34307/files').reply(200, filesResponse);
-      conn.getJobs().then(jobs => conn.getJobCards(jobs.TESTA).should.eventually.have.keys('JESMSGLG', 'JESJCL', 'JESYSMSG', 'STDOUT', 'STDERR'));
+      conn.getJobs('user').then(jobs => conn.getJobCards(jobs.TESTA).should.eventually.have.keys('JESMSGLG', 'JESJCL', 'JESYSMSG', 'STDOUT', 'STDERR'));
     });
     it('should fail with an authorization error', () => {
-      const conn = new ZosJobs('http://test:9080', 'user', 'password', 'user');
+      const conn = new ZosJobs('http://test:9080', 'user', 'password');
       nock('http://test:9080').get('/zosmf/restjobs/jobs').query({
         owner: 'user',
       }).reply(200, getJobsResponse);
       nock('http://test:9080').get('/zosmf/restjobs/jobs/-JES2/TESTA/JOB34307/files').reply(401);
-      conn.getJobs().then(jobs => conn.getJobCards(jobs.TESTA).should.be.rejectedWith(401));
+      conn.getJobs('user').then(jobs => conn.getJobCards(jobs.TESTA).should.be.rejectedWith(401));
     });
     it('should fail with a zOSMF error', () => {
-      const conn = new ZosJobs('http://test:9080', 'user', 'password', 'user');
+      const conn = new ZosJobs('http://test:9080', 'user', 'password');
       nock('http://test:9080').get('/zosmf/restjobs/jobs').query({
         owner: 'user',
       }).reply(200, getJobsResponse);
       nock('http://test:9080').get('/zosmf/restjobs/jobs/-JES2/TESTA/JOB34307/files').reply(500, 'Server Error');
-      conn.getJobs().then(jobs => conn.getJobCards(jobs.TESTA).should.be.rejectedWith('Server Error'));
+      conn.getJobs('user').then(jobs => conn.getJobCards(jobs.TESTA).should.be.rejectedWith('Server Error'));
     });
     it('should fail due to a network error', () => {
-      const conn = new ZosJobs('http://test:9080', 'user', 'password', 'user');
+      const conn = new ZosJobs('http://test:9080', 'user', 'password');
       nock('http://test:9080').get('/zosmf/restjobs/jobs').query({
         owner: 'user',
       }).reply(200, getJobsResponse);
       nock('http://test:9080').get('/zosmf/restjobs/jobs/-JES2/TESTA/JOB34307/files').replyWithError('Socket Error');
-      conn.getJobs().then(jobs => conn.getJobCards(jobs.TESTA).should.be.rejectedWith('Socket Error'));
-    });
-    it('should change the owner filter', () => {
-      const conn = new ZosJobs('http://test:9080', 'user', 'password', 'olduser');
-      conn.setOwner('user');
-      nock('http://test:9080').get('/zosmf/restjobs/jobs').query({
-        owner: 'user',
-      }).reply(200, getJobsResponse);
-      nock('http://test:9080').get('/zosmf/restjobs/jobs/-JES2/TESTA/JOB34307/files').reply(200, filesResponse);
-      conn.getJobs().then(jobs => conn.getJobCards(jobs.TESTA).should.eventually.have.keys('JESMSGLG', 'JESJCL', 'JESYSMSG', 'STDOUT', 'STDERR'));
+      conn.getJobs('user').then(jobs => conn.getJobCards(jobs.TESTA).should.be.rejectedWith('Socket Error'));
     });
   });
 
   describe('getRecords', () => {
-    const conn = new ZosJobs('http://test:9080', 'user', 'password', 'user');
+    const conn = new ZosJobs('http://test:9080', 'user', 'password');
     it('should return the record content', () => {
       nock('http://test:9080').get('/zosmf/restjobs/jobs/-JES2/TESTA/JOB34307/files/102/records').reply(200, 'Output');
       return conn.getRecords(filesResponse[3]).should.eventually.equal('Output');
@@ -237,7 +228,7 @@ describe('zosjobs', () => {
   });
 
   describe('issueCommand', () => {
-    const conn = new ZosJobs('http://test:9080', 'user', 'password', 'user');
+    const conn = new ZosJobs('http://test:9080', 'user', 'password');
     it('should return the command response', () => {
       nock('http://test:9080').put('/zosmf/restconsoles/consoles/defcn').reply(200, commandResponse);
       return conn.issueCommand('f CICPY00B,cemt inq PROG(DFH*)', 'MV2C').should.eventually.equal(commandResponse['cmd-response'].replace(/\r/g, '\n'));
@@ -257,7 +248,7 @@ describe('zosjobs', () => {
   });
 
   describe('submitJob', () => {
-    const conn = new ZosJobs('http://test:9080', 'user', 'password', 'user');
+    const conn = new ZosJobs('http://test:9080', 'user', 'password');
     it('should return the job object', () => {
       nock('http://test:9080').put('/zosmf/restjobs/jobs/').reply(200, submittedResponse);
       return conn.submitJob('//JOBCARD NOTIFY=&USERID.').should.eventually.have.keys('owner', 'phase', 'subsystem', 'phase-name', 'job-correlator', 'type', 'url', 'jobid', 'class', 'files-url', 'jobname', 'status', 'retcode');
