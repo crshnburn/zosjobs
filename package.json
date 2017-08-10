@@ -1,6 +1,6 @@
 {
   "name": "zosjobs",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Command line access to z/OS Connect Jobs",
   "author": "Andrew Smithson <smithson@uk.ibm.com>",
   "license": "Apache-2.0",
@@ -31,5 +31,9 @@
   },
   "keywords": [
     "z/OS", "jobs", "mainframe", "z/OSMF"
-  ]
+  ],
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/crshnburn/zosjobs"
+  }
 }
