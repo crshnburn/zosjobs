@@ -64,6 +64,6 @@ async.series([
   conf.set(name, {
     url: connUrl,
     user: userName,
-    password: pass,
+    password: new Buffer(pass).toString('base64'),
   });
 });

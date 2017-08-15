@@ -38,7 +38,7 @@ async.series([
   },
 ], () => {
   const serverDetails = conf.get(serverName);
-  const zosjobs = new ZosJobs(serverDetails.url, serverDetails.user, serverDetails.password);
+  const zosjobs = new ZosJobs(serverDetails.url, serverDetails.user, new Buffer(serverDetails.password, 'base64').toString());
   async.series([
     function getOwner(done) {
       if (program.owner) {
