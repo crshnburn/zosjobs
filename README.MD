@@ -7,8 +7,6 @@ Command line tool to retrieve z/OS Job Output and display on the console.
 
 Makes use of the [zOSMF REST API](https://www.ibm.com/support/knowledgecenter/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_RESTJOBS.htm).
 
-![zosjobs example](doc/zosjobs.gif)
-
 ## Installation
 
 1. `npm install -g zosjobs`
@@ -16,16 +14,24 @@ Makes use of the [zOSMF REST API](https://www.ibm.com/support/knowledgecenter/SS
 ## Usage
 
 ```text
-  Usage: zosjobs [options]
+  Usage: zosjobs [options] [command]
+
 
   Options:
 
-    -h, --help                 output usage information
-    -V, --version              output the version number
-    -c, --connUrl [url]        specifies the z/OS MF hostname and port
-    -u, --user [user]          specifies the user ID
-    -p, --password [password]  specifies the password
-    -o, --owner [owner]        the owner of the jobs to retrieve
+    -V, --version  output the version number
+    -h, --help     output usage information
+
+
+  Commands:
+
+    add-server|add         Add a z/OS MF Server configuration
+    update-server|update   Update a z/OS MF Server configuration
+    delete-server|delete   Remove a z/OS MF Server configuration
+    jobs                   Get information about a z/OS Job
+    submit                 Submit a Job
+    command                Issue a command
+    help [cmd]             display help for [cmd]
 ```
 
 ## License
