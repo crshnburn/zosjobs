@@ -13,7 +13,9 @@ const packageInfo = require('./package.json');
 const conf = new Configstore(packageInfo.name);
 
 program
-  .option('-s --server [servername]')
+  .option('-s --server <servername>')
+  .option('-m --mvsCommand <command>')
+  .option('-i --image <MVS Image>')
   .parse(process.argv);
 
 let serverName;
@@ -38,17 +40,40 @@ async.series([
 ], () => {
   const serverDetails = conf.get(serverName);
   const zosjobs = new ZosJobs(serverDetails.url, serverDetails.user, new Buffer(serverDetails.password, 'base64').toString());
-  const commandOptions = [{
-    type: 'input',
-    name: 'command',
-    message: 'Enter the command',
-  },
-  {
-    type: 'input',
-    name: 'system',
-    message: 'Which system should the command run on?',
-  }];
-  inquirer.prompt(commandOptions).then((answers) => {
-    zosjobs.issueCommand(answers.command, answers.system).then(console.log).catch(console.log);
+  let command;
+  let image;
+  async.series([
+    function commandPrompt(done) {
+      if (program.mvsCommand) {
+        command = program.mvsCommand;
+        done();
+      } else {
+        inquirer.prompt([{
+          type: 'input',
+          name: 'command',
+          message: 'Enter the command',
+        }]).then((answers) => {
+          command = answers.command;
+          done();
+        });
+      }
+    },
+    function imagePrompt(done) {
+      if (program.image) {
+        image = program.image;
+        done();
+      } else {
+        inquirer.prompt([{
+          type: 'input',
+          name: 'system',
+          message: 'Which system should the command run on?',
+        }]).then((answers) => {
+          image = answers.image;
+          done();
+        });
+      }
+    },
+  ], () => {
+    zosjobs.issueCommand(command, image).then(console.log).catch(console.log);
   });
 });
