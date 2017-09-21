@@ -14,6 +14,7 @@ const conf = new Configstore(packageInfo.name);
 
 program
   .option('-s --server [servername]')
+  .option('-f --file [filename]')
   .parse(process.argv);
 
 let serverName;
@@ -38,11 +39,15 @@ async.series([
 ], () => {
   const serverDetails = conf.get(serverName);
   const zosjobs = new ZosJobs(serverDetails.url, serverDetails.user, new Buffer(serverDetails.password, 'base64').toString());
-  inquirer.prompt([{
-    type: 'editor',
-    name: 'jcl',
-    message: 'Enter JCL:',
-  }]).then((answers) => {
-    zosjobs.submitJob(answers.jcl).then(console.log).catch(console.log);
-  });
+  if (program.file) {
+    zosjobs.submitRemoteJob(program.file).then(console.log).catch(console.log);
+  } else {
+    inquirer.prompt([{
+      type: 'editor',
+      name: 'jcl',
+      message: 'Enter JCL:',
+    }]).then((answers) => {
+      zosjobs.submitJob(answers.jcl).then(console.log).catch(console.log);
+    });
+  }
 });

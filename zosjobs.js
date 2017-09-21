@@ -185,4 +185,38 @@ module.exports = class ZosJobs {
       });
     });
   }
+
+  submitRemoteJob(location) {
+    return new Promise((resolve, reject) => {
+      const options = {
+        uri: `${this.url}/zosmf/restjobs/jobs/`,
+        auth: {
+          user: this.userId,
+          password: this.password,
+          sendImmediately: true,
+        },
+        headers: {
+          'X-IBM-Intrdr-Class': 'A',
+        },
+        json: true,
+        strictSSL: false,
+        body: {
+          file: location,
+        },
+      };
+      request.put(options, (error, response, data) => {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode !== 200) {
+          if (data === '') {
+            reject(response.statusCode);
+          } else {
+            reject(data);
+          }
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
 };
