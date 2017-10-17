@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/crshnburn/zosjobs.svg?branch=master)](https://travis-ci.org/crshnburn/zosjobs)
 [![codecov](https://codecov.io/gh/crshnburn/zosjobs/branch/master/graph/badge.svg)](https://codecov.io/gh/crshnburn/zosjobs)
 
-Command line tool to retrieve z/OS Job Output and display on the console.
+Command line tool to work with z/OS Jobs.
 
 Makes use of the [zOSMF REST API](https://www.ibm.com/support/knowledgecenter/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_RESTJOBS.htm).
 
@@ -33,6 +33,39 @@ Makes use of the [zOSMF REST API](https://www.ibm.com/support/knowledgecenter/SS
     command                Issue a command
     help [cmd]             display help for [cmd]
 ```
+
+## Add Server
+
+Stores the details of a z/OS MF connection, along with the user ID and password used to access the server.
+
+## Update Server
+
+Updates the details of a z/OS MF connection.
+
+## Delete Server
+
+Removes a z/OS MF connection.
+
+## Jobs
+
+Retrieve the jobs information currently available for the specified owner.
+
+```text
+  Options:
+
+    -s --server [servername]
+    -o --owner [owner]
+```
+
+If the `-s` option is ommitted then you are prompted to select from the list of servers already added using the `add-server` command.
+
+If the `-o` option is ommitted then you are prompted to enter the owner of the jobs to retrieve, by default it will be the user configured in the server configuration.
+
+The tool will then retrieve all the available jobs and given the option to select one, and the show the job cards for the selected job before finally displaying the contents of the job card.
+
+## Submit
+
+## Command
 
 ## License
 
