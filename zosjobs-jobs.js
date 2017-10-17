@@ -14,6 +14,7 @@ const conf = new Configstore(packageInfo.name);
 
 program
   .option('-s --server [servername]')
+  .option('-o --owner [owner]')
   .parse(process.argv);
 
 let serverName;
