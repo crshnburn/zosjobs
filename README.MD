@@ -65,7 +65,36 @@ The tool will then retrieve all the available jobs and given the option to selec
 
 ## Submit
 
+Submit a job.
+
+```text
+  Options:
+
+    -s --server [servername]
+    -f --file [filename]
+```
+
+If the `-s` option is ommitted then you are promted to select from the list of servers already added using the `add-server` command.
+
+The `-f` option allows you to specify a location on the mainframe for the JCL. If this option is ommitted then you are prompted to enter the JCL in the default editor for you system.
+
 ## Command
+
+Issue an MVS command.
+
+```text
+  Options:
+
+    -s --server <servername>
+    -m --mvsCommand <command>
+    -i --image <MVS Image>
+```
+
+If the `-s` option is ommitted then you are promted to select from the list of servers already added using the `add-server` command.
+
+If either of the other options are ommitted then you are prompted to enter them.
+
+*Note:* Do not start the command with a `/` as this will cause an error.
 
 ## License
 
